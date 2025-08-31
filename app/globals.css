@@ -128,6 +128,8 @@
   /* Badge System Variables */
   --badge-pro-background: rgba(228, 42, 66, 0.15);
   --badge-pro-text: rgb(252, 211, 77);
+  --badge-pro-shadow-border-dark: rgb(252, 211, 77, 0.4);
+  --badge-pro-shadow-border-light: rgba(212, 163, 0, 0.85);
   --badge-pro-border: rgba(228, 42, 66, 0.3);
   --badge-pro-glow: rgba(228, 42, 66, 0.3);
   --badge-free-background: rgba(16, 185, 129, 0.15);

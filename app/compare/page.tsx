@@ -356,7 +356,7 @@ export default function Home() {
       )}
 
       <div className="relative z-10 px-3 lg:px-4 py-4 lg:py-6">
-        <div className="flex gap-3 lg:gap-4">
+        <div className="flex gap-0 lg:gap-0">
           {/* Sidebar */}
           <ThreadSidebar
             sidebarOpen={sidebarOpen}
