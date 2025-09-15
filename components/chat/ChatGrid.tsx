@@ -103,11 +103,12 @@ export default function ChatGrid({
                   <div
                     key={m.id}
                     className={cn(
-                      'px-2.5 py-2 sm:px-2 sm:py-2 min-h-[42px] min-w-0 flex items-center rounded-b-lg backdrop-blur-xs shadow-[0_2px_4px_rgba(0,0,0,0.25)]',
+                      'px-2.5 py-2 sm:px-2 sm:py-2 min-h-[42px] min-w-0 flex items-center rounded-b-lg backdrop-blur-sm shadow-[0_2px_4px_rgba(0,0,0,0.25)] bg-black/90', //UI_option: model chatbot bar color
                       isCollapsed ? 'justify-center' : 'justify-between',
                       m.good 
                         ? isDark
-                          ? 'shadow-[0px_1px_4px_var(--badge-pro-shadow-border-dark)]'
+                          ? 'outline-1 outline-amber-300/50' // UI_option: pro model dark theme outline
+                          // ? 'shadow-[0px_1px_4px_var(--badge-pro-shadow-border-dark)]'
                           : 'shadow-[0px_1px_4px_var(--badge-pro-shadow-border-light)]'
                         : isDark
                           ? 'shadow-[0px_1px_2px_rgba(255,255,255,0.25)]'

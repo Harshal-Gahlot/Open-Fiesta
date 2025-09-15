@@ -84,18 +84,18 @@ export default function Home() {
     deleteProject,
     selectProject,
   } = useProjects();
-  
+
   // Project modal handlers
   const handleCreateProject = () => {
     setEditingProject(null);
     setProjectModalOpen(true);
   };
-  
+
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
     setProjectModalOpen(true);
   };
-  
+
   const handleSaveProject = (project: Project) => {
     if (editingProject) {
       updateProject(project);
@@ -111,13 +111,10 @@ export default function Home() {
     [threads, activeId],
   );
   // Only show chats for the active project (or all if none selected)
-  const visibleThreads = useMemo(
-    () => {
-      const scope = threads.filter((t) => t.pageType === 'compare');
-      return activeProjectId ? scope.filter((t) => t.projectId === activeProjectId) : scope
-    },
-    [threads, activeProjectId],
-  );
+  const visibleThreads = useMemo(() => {
+    const scope = threads.filter((t) => t.pageType === 'compare');
+    return activeProjectId ? scope.filter((t) => t.projectId === activeProjectId) : scope;
+  }, [threads, activeProjectId]);
   const messages = useMemo(() => activeThread?.messages ?? [], [activeThread]);
 
   const [loadingIds, setLoadingIds] = useState<string[]>([]);
@@ -194,34 +191,34 @@ export default function Home() {
   useEffect(() => {
     const load = async () => {
       if (!user?.id) {
-        setThreads([])
-        setActiveId(null)
-        return
+        setThreads([]);
+        setActiveId(null);
+        return;
       }
       try {
-        const dbThreads = await fetchThreads(user.id)
-        setThreads(dbThreads)
+        const dbThreads = await fetchThreads(user.id);
+        setThreads(dbThreads);
         if (dbThreads.length > 0) {
-          const compareThreads = dbThreads.filter(t => t.pageType === 'compare')
-          const preferredThread = activeProjectId 
-            ? compareThreads.find(t => t.projectId === activeProjectId)
-            : compareThreads[0]
+          const compareThreads = dbThreads.filter((t) => t.pageType === 'compare');
+          const preferredThread = activeProjectId
+            ? compareThreads.find((t) => t.projectId === activeProjectId)
+            : compareThreads[0];
           setActiveId((prev) => {
-            if (prev && dbThreads.some(t => t.id === prev && t.pageType === 'compare')) {
-              return prev
+            if (prev && dbThreads.some((t) => t.id === prev && t.pageType === 'compare')) {
+              return prev;
             }
-            return preferredThread?.id || null
-          })
+            return preferredThread?.id || null;
+          });
         } else {
-          setActiveId(null)
+          setActiveId(null);
         }
       } catch (e) {
-        console.warn('Failed to load compare threads from Supabase:', e)
+        console.warn('Failed to load compare threads from Supabase:', e);
       }
-    }
-    load()
+    };
+    load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id, activeProjectId])
+  }, [user?.id, activeProjectId]);
 
   // group assistant messages by turn for simple compare view
   const pairs = useMemo(() => {
@@ -242,12 +239,12 @@ export default function Home() {
   // "Thinking…" message for each loading model on the latest turn so the UI
   // shows a loading indicator instead of "No response".
   const pairsWithPlaceholders = useMemo(() => {
-    const cloned = pairs.map(r => ({ user: r.user, answers: [...r.answers] }));
+    const cloned = pairs.map((r) => ({ user: r.user, answers: [...r.answers] }));
     if (cloned.length === 0) return cloned;
     const last = cloned[cloned.length - 1];
-    const answeredIds = new Set(last.answers.map(a => a.modelId).filter(Boolean) as string[]);
+    const answeredIds = new Set(last.answers.map((a) => a.modelId).filter(Boolean) as string[]);
     // Show placeholders for any selected model that hasn't answered yet
-    selectedModels.forEach(m => {
+    selectedModels.forEach((m) => {
       if (!answeredIds.has(m.id)) {
         last.answers.push({
           id: `thinking-${m.id}-${safeUUID()}`,
@@ -312,14 +309,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={cn("compare-page min-h-screen w-full relative", isDark ? "dark" : "")}>
+    <div className={cn('compare-page min-h-screen w-full relative', isDark ? 'dark' : '')}>
       {/* Background */}
       {isDark ? (
         <div
           className="absolute inset-0 z-0"
           style={{
             background:
-              "linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6)), radial-gradient(68% 58% at 50% 50%, #c81e3a 0%, #a51d35 16%, #7d1a2f 32%, #591828 46%, #3c1722 60%, #2a151d 72%, #1f1317 84%, #141013 94%, #0a0a0a 100%), radial-gradient(90% 75% at 50% 50%, rgba(228,42,66,0.06) 0%, rgba(228,42,66,0) 55%), radial-gradient(150% 120% at 8% 8%, rgba(0,0,0,0) 42%, #0b0a0a 82%, #070707 100%), radial-gradient(150% 120% at 92% 92%, rgba(0,0,0,0) 42%, #0b0a0a 82%, #070707 100%), radial-gradient(60% 50% at 50% 60%, rgba(240,60,80,0.06), rgba(0,0,0,0) 60%), #050505",
+              'linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6)), radial-gradient(68% 58% at 50% 50%, #c81e3a 0%, #a51d35 16%, #7d1a2f 32%, #591828 46%, #3c1722 60%, #2a151d 72%, #1f1317 84%, #141013 94%, #0a0a0a 100%), radial-gradient(90% 75% at 50% 50%, rgba(228,42,66,0.06) 0%, rgba(228,42,66,0) 55%), radial-gradient(150% 120% at 8% 8%, rgba(0,0,0,0) 42%, #0b0a0a 82%, #070707 100%), radial-gradient(150% 120% at 92% 92%, rgba(0,0,0,0) 42%, #0b0a0a 82%, #070707 100%), radial-gradient(60% 50% at 50% 60%, rgba(240,60,80,0.06), rgba(0,0,0,0) 60%), #050505',
           }}
         />
       ) : (
@@ -343,7 +340,8 @@ export default function Home() {
         <div
           className="absolute inset-0 z-0 pointer-events-none"
           style={{
-            backgroundImage: "radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.5) 100%)",
+            backgroundImage:
+              'radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.5) 100%)',
             opacity: 0.95,
           }}
         />
@@ -351,11 +349,14 @@ export default function Home() {
 
       {showSplash && (
         <div className="fixed inset-0 z-[9999]">
-          <LaunchScreen backgroundClass={BACKGROUND_STYLES[theme.background].className} dismissed={isHydrated} />
+          <LaunchScreen
+            backgroundClass={BACKGROUND_STYLES[theme.background].className}
+            dismissed={isHydrated}
+          />
         </div>
       )}
 
-      <div className="relative z-10 px-3 lg:px-4 py-4 lg:py-6">
+      <div className="relative z-10 px-1 py-4 lg:py-6">
         <div className="flex gap-0 lg:gap-0">
           {/* Sidebar */}
           <ThreadSidebar
@@ -395,8 +396,10 @@ export default function Home() {
                 if (activeId === id) {
                   const inScope = next.filter((t) => t.pageType === 'compare');
                   const nextInScope =
-                    (activeProjectId ? inScope.find((t) => t.projectId === activeProjectId) : inScope[0])
-                      ?.id ?? null;
+                    (activeProjectId
+                      ? inScope.find((t) => t.projectId === activeProjectId)
+                      : inScope[0]
+                    )?.id ?? null;
                   setActiveId(nextInScope);
                 }
                 return next;
@@ -415,23 +418,30 @@ export default function Home() {
           {/* Main content */}
           <div className="flex-1 min-w-0 flex flex-col h-[calc(100vh-2rem)] lg:h-[calc(100vh-3rem)] overflow-hidden ">
             {/* Mobile Header with Hamburger */}
-          <div className={cn(
-            "lg:hidden flex items-center justify-between p-4 border-b",
-            isDark ? "border-white/10" : "border-rose-200/40"
-          )}>
+            <div
+              className={cn(
+                'lg:hidden flex items-center justify-between p-4 border-b',
+                isDark ? 'border-white/10' : 'border-rose-200/40',
+              )}
+            >
               <button
                 onClick={() => setMobileSidebarOpen(true)}
                 className={cn(
-                  "inline-flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95",
+                  'inline-flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95',
                   isDark
-                    ? "bg-gradient-to-r from-white/12 to-white/8 border border-white/15 text-white hover:from-white/18 hover:to-white/12 hover:border-white/25 backdrop-blur-sm shadow-lg"
-                    : "bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-50 shadow-sm"
+                    ? 'bg-gradient-to-r from-white/12 to-white/8 border border-white/15 text-white hover:from-white/18 hover:to-white/12 hover:border-white/25 backdrop-blur-sm shadow-lg'
+                    : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-50 shadow-sm',
                 )}
                 aria-label="Open menu"
                 title="Menu"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               </button>
               {/* Right: Actions trigger (mobile) */}
@@ -443,10 +453,10 @@ export default function Home() {
                 <button
                   onClick={() => setMobileActionsOpen((v) => !v)}
                   className={cn(
-                    "inline-flex items-center justify-center h-9 w-9 rounded-md border shadow",
+                    'inline-flex items-center justify-center h-9 w-9 rounded-md border shadow',
                     isDark
-                      ? "border-white/15 bg-white/5 hover:bg-white/10"
-                      : "border-rose-200/60 bg-rose-50/60 hover:bg-rose-100/80"
+                      ? 'border-white/15 bg-white/5 hover:bg-white/10'
+                      : 'border-rose-200/60 bg-rose-50/60 hover:bg-rose-100/80',
                   )}
                   aria-label="Open quick actions"
                   title="Actions"
@@ -460,19 +470,19 @@ export default function Home() {
                 </button>
 
                 {mobileActionsOpen && (
-                  <div className={cn(
-                    "absolute right-0 top-11 z-50 rounded-xl border shadow-xl p-2 flex items-center gap-2 backdrop-blur-md",
-                    isDark
-                      ? "border-white/15 bg-black/60"
-                      : "border-rose-200/50 bg-white/95"
-                  )}>
+                  <div
+                    className={cn(
+                      'absolute right-0 top-11 z-50 rounded-xl border shadow-xl p-2 flex items-center gap-2 backdrop-blur-md',
+                      isDark ? 'border-white/15 bg-black/60' : 'border-rose-200/50 bg-white/95',
+                    )}
+                  >
                     <Link
                       href="/chat"
                       className={cn(
-                        "inline-flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95",
+                        'inline-flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95',
                         isDark
-                          ? "bg-gradient-to-r from-white/12 to-white/8 border border-white/15 text-white hover:from-white/18 hover:to-white/12 hover:border-white/25 backdrop-blur-sm shadow-lg"
-                          : "bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-50 shadow-sm"
+                          ? 'bg-gradient-to-r from-white/12 to-white/8 border border-white/15 text-white hover:from-white/18 hover:to-white/12 hover:border-white/25 backdrop-blur-sm shadow-lg'
+                          : 'bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-50 shadow-sm',
                       )}
                       aria-label="Go to home"
                       title="Home"
@@ -480,12 +490,15 @@ export default function Home() {
                       <HomeIcon size={18} />
                     </Link>
                     <button
-                      onClick={() => { setModelsModalOpen(true); setMobileActionsOpen(false); }}
+                      onClick={() => {
+                        setModelsModalOpen(true);
+                        setMobileActionsOpen(false);
+                      }}
                       className={cn(
-                        "inline-flex items-center gap-1.5 text-xs h-9 w-9 justify-center rounded-md border shadow",
+                        'inline-flex items-center gap-1.5 text-xs h-9 w-9 justify-center rounded-md border shadow',
                         isDark
-                          ? "border-white/15 bg-white/5 hover:bg-white/10"
-                          : "border-rose-200/60 bg-rose-50/60 hover:bg-rose-100/80"
+                          ? 'border-white/15 bg-white/5 hover:bg-white/10'
+                          : 'border-rose-200/60 bg-rose-50/60 hover:bg-rose-100/80',
                       )}
                       title="Change models"
                       aria-label="Change models"
@@ -553,11 +566,15 @@ export default function Home() {
             )}
 
             {isHydrated && (
-              <div className="px-3 lg:px-4">
+              <div
+                className="relative w-[100%] h-[1px] mb-[-1px]"
+              >
                 <HomeAiInput
                   isDark={isDark}
                   onSubmit={(text) => {
-                    try { console.log('[Compare] HomeAiInput onSubmit:', text); } catch {}
+                    try {
+                      console.log('[Compare] HomeAiInput onSubmit:', text);
+                    } catch {}
                     send(text);
                   }}
                 />
