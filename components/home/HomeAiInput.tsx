@@ -1,27 +1,27 @@
-'use client'
+"use client";
 
-import type React from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Globe, Paperclip, Send, Loader2, X, Mic, MicOff, Sparkles, FileText } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Textarea } from '@/components/ui/textarea'
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import Image from 'next/image'
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Globe, Paperclip, Send, Loader2, X, Mic, MicOff, Sparkles, FileText } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import Image from "next/image";
 
 interface Props {
-  onSubmit?: (text: string) => void
-  isDark?: boolean
+  onSubmit?: (text: string) => void;
+  isDark?: boolean;
   // When provided, replaces the Search toggle with a model selector button
-  modelSelectorLabel?: string
-  onOpenModelSelector?: () => void
+  modelSelectorLabel?: string;
+  onOpenModelSelector?: () => void;
   // For edit functionality
-  initialValue?: string
-  onClear?: () => void
+  initialValue?: string;
+  onClear?: () => void;
 }
 
-const MIN_HEIGHT = 56
-const MAX_HEIGHT = 250
+const MIN_HEIGHT = 56;
+const MAX_HEIGHT = 250;
 
 export default function HomeAiInput({
   onSubmit,
@@ -32,16 +32,16 @@ export default function HomeAiInput({
   onClear,
 }: Props) {
   // const [isHovered, setIsHovered] = useState(false);
-  const [isMultiLine, setIsMultiLine] = useState(false)
-  const singleLineHeightRef = useRef<number>(0)
-  const [value, setValue] = useState(initialValue || '')
-  const [showSearch, setShowSearch] = useState(true)
-  const [isEnhancing, setIsEnhancing] = useState(false)
-  const [attachedFile, setAttachedFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [attachmentErrorMsg, setAttachmentErrorMsg] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [isMultiLine, setIsMultiLine] = useState(false);
+  const singleLineHeightRef = useRef<number>(0);
+  const [value, setValue] = useState(initialValue || "");
+  const [showSearch, setShowSearch] = useState(true);
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [attachmentErrorMsg, setAttachmentErrorMsg] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Speech recognition
   const {
@@ -50,99 +50,99 @@ export default function HomeAiInput({
     resetTranscript,
     browserSupportsSpeechRecognition,
     isMicrophoneAvailable,
-  } = useSpeechRecognition()
+  } = useSpeechRecognition();
 
   useEffect(() => {
     if (transcript) {
-      setValue(transcript)
-      adjustHeight()
+      setValue(transcript);
+      adjustHeight();
     }
-  }, [transcript])
+  }, [transcript]);
 
   // Update value when initialValue changes (for edit functionality)
   useEffect(() => {
     if (initialValue !== undefined) {
-      setValue(initialValue)
-      adjustHeight()
+      setValue(initialValue);
+      adjustHeight();
     }
-  }, [initialValue])
+  }, [initialValue]);
 
   const startListening = () => {
     if (!browserSupportsSpeechRecognition) {
-      alert('Your browser does not support speech recognition.')
-      return
+      alert("Your browser does not support speech recognition.");
+      return;
     }
     if (!isMicrophoneAvailable) {
-      alert('Microphone access is required for speech recognition.')
-      return
+      alert("Microphone access is required for speech recognition.");
+      return;
     }
-    resetTranscript()
-    SpeechRecognition.startListening({ continuous: true, language: 'en-US' })
-  }
+    resetTranscript();
+    SpeechRecognition.startListening({ continuous: true, language: "en-US" });
+  };
 
   const stopListening = () => {
-    SpeechRecognition.stopListening()
-  }
+    SpeechRecognition.stopListening();
+  };
 
   const adjustHeight = useCallback(() => {
-    const ta = textareaRef.current
-    if (!ta) return
+    const ta = textareaRef.current;
+    if (!ta) return;
 
-    if (ta.value === '') {
+    if (ta.value === "") {
       // Reset back to rounded singleline textarea
-      ta.style.height = `${MIN_HEIGHT}px`
-      setIsMultiLine(false)
+      ta.style.height = `${MIN_HEIGHT}px`;
+      setIsMultiLine(false);
     } else if (isMultiLine) {
       // Set height limit to multiLine textarea
       if (ta.scrollHeight > MAX_HEIGHT) {
-        ta.style.height = `auto`
-        ta.style.height = `${MAX_HEIGHT}px`
-        return
+        ta.style.height = `auto`;
+        ta.style.height = `${MAX_HEIGHT}px`;
+        return;
       }
       // allows textarea to grow height without scrollbar
-      ta.style.height = `auto`
+      ta.style.height = `auto`;
     } else {
       if (ta.clientHeight < ta.scrollHeight) {
-        ta.style.height = `auto`
-        const newH = Math.min(MIN_HEIGHT - 8, ta.scrollHeight - 8, MAX_HEIGHT)
-        ta.style.height = `${newH}px`
-        setIsMultiLine(true)
+        ta.style.height = `auto`;
+        const newH = Math.min(MIN_HEIGHT - 8, ta.scrollHeight - 8, MAX_HEIGHT);
+        ta.style.height = `${newH}px`;
+        setIsMultiLine(true);
       }
     }
-  }, [isMultiLine])
+  }, [isMultiLine]);
 
   useEffect(() => {
-    const ta = textareaRef.current
+    const ta = textareaRef.current;
 
     if (ta && singleLineHeightRef.current === 0) {
-      ta.style.height = 'auto' // Reset
-      singleLineHeightRef.current = ta.scrollHeight
+      ta.style.height = "auto"; // Reset
+      singleLineHeightRef.current = ta.scrollHeight;
 
-      ta.style.height = `${MIN_HEIGHT}px`
+      ta.style.height = `${MIN_HEIGHT}px`;
     }
-  }, [])
+  }, []);
 
   useEffect(
     () => () => {
-      if (imagePreview) URL.revokeObjectURL(imagePreview)
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
     },
     [imagePreview],
-  )
+  );
 
   const handleRemoveAttachment = (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
     }
-    if (fileInputRef.current) fileInputRef.current.value = ''
-    if (imagePreview) URL.revokeObjectURL(imagePreview)
-    setImagePreview(null)
-    setAttachedFile(null)
-  }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    setImagePreview(null);
+    setAttachedFile(null);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null
-    if (!file) return
+    const file = e.target.files ? e.target.files[0] : null;
+    if (!file) return;
 
     // Allowed: images, txt, pdf, doc, docx
     const allowed = [
@@ -151,78 +151,78 @@ export default function HomeAiInput({
       /^application\/pdf$/,
       /^application\/msword$/,
       /^application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document$/,
-    ]
-    const isAllowed = allowed.some((re) => re.test(file.type))
+    ];
+    const isAllowed = allowed.some((re) => re.test(file.type));
     if (!isAllowed) {
-      setAttachmentErrorMsg('Unsupported file. Allowed: Images, TXT, PDF, DOC, DOCX.')
-      setTimeout(() => setAttachmentErrorMsg(null), 4000)
-      if (fileInputRef.current) fileInputRef.current.value = ''
-      return
+      setAttachmentErrorMsg("Unsupported file. Allowed: Images, TXT, PDF, DOC, DOCX.");
+      setTimeout(() => setAttachmentErrorMsg(null), 4000);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
     }
 
-    setAttachedFile(file)
-    if (file.type.startsWith('image/')) {
-      setImagePreview(URL.createObjectURL(file))
+    setAttachedFile(file);
+    if (file.type.startsWith("image/")) {
+      setImagePreview(URL.createObjectURL(file));
     } else {
-      setImagePreview(null)
+      setImagePreview(null);
     }
-  }
+  };
 
   const handleSend = () => {
-    const text = value.trim()
-    if (!text) return
-    if (listening) setTimeout(() => stopListening(), 100)
+    const text = value.trim();
+    if (!text) return;
+    if (listening) setTimeout(() => stopListening(), 100);
     // Debug: verify send triggers and onSubmit exists
     try {
-      console.log('[HomeAiInput] handleSend invoked with:', text)
+      console.log("[HomeAiInput] handleSend invoked with:", text);
     } catch {}
     if (onSubmit) {
-      onSubmit(text)
+      onSubmit(text);
     } else {
       try {
-        console.warn('[HomeAiInput] onSubmit prop is not provided')
+        console.warn("[HomeAiInput] onSubmit prop is not provided");
       } catch {}
     }
     // Clear value but keep the height as-is and refocus to preserve layout/feel
-    setValue('')
-    setAttachedFile(null)
-    setImagePreview(null)
-    onClear?.() // Call clear callback if provided
+    setValue("");
+    setAttachedFile(null);
+    setImagePreview(null);
+    onClear?.(); // Call clear callback if provided
     requestAnimationFrame(() => {
-      textareaRef.current?.focus()
+      textareaRef.current?.focus();
       // Do NOT reset height here so the bar stays expanded visually
-    })
-  }
+    });
+  };
 
   // Prompt Enhancer (calls /api/enhance-prompt)
   const enhancePrompt = async () => {
-    const text = value.trim()
-    if (!text || isEnhancing) return
-    if (listening) setTimeout(() => stopListening(), 100)
-    setIsEnhancing(true)
+    const text = value.trim();
+    if (!text || isEnhancing) return;
+    if (listening) setTimeout(() => stopListening(), 100);
+    setIsEnhancing(true);
     try {
-      const res = await fetch('/api/enhance-prompt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/enhance-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: text }),
-      })
+      });
       if (!res.ok) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const err = await res.json().catch(() => ({}) as any)
-        throw new Error(err?.error || `HTTP ${res.status}`)
+        const err = await res.json().catch(() => ({}) as any);
+        throw new Error(err?.error || `HTTP ${res.status}`);
       }
-      const data = await res.json()
+      const data = await res.json();
       if (data?.enhancedPrompt) {
-        setValue(data.enhancedPrompt)
-        adjustHeight()
-        requestAnimationFrame(() => textareaRef.current?.focus())
+        setValue(data.enhancedPrompt);
+        adjustHeight();
+        // requestAnimationFrame(() => textareaRef.current?.focus())
       }
     } catch (e) {
-      console.error('Enhance failed', e)
+      console.error("Enhance failed", e);
     } finally {
-      setIsEnhancing(false)
+      setIsEnhancing(false);
     }
-  }
+  };
 
   return (
     <motion.div className="absolute w-[100%] h-[10px] mb-[1px]">
@@ -233,16 +233,16 @@ export default function HomeAiInput({
           w-[calc(90%-theme(spacing.8))] max-w-[50ch] 
           -translate-x-1/2 left-[50%]
           m-0 p-0 relative`,
-          isDark ? '' : '',
+          isDark ? "" : "",
         )}
-        style={{ position: 'absolute', bottom: '50px', zIndex: 1 }} // Add this inline style
+        style={{ position: "absolute", bottom: "50px", zIndex: 1 }} // Add this inline style
       >
         <div className="flex flex-row items-end">
           {/* Content area: conditional image layout or standard textarea */}
           {imagePreview && (
             <div
               className=""
-              style={{ '--ai-input-max': `${MAX_HEIGHT}px` } as React.CSSProperties}
+              style={{ "--ai-input-max": `${MAX_HEIGHT}px` } as React.CSSProperties}
             >
               <div className="flex gap-3 p-3 pr-4">
                 <div className="relative h-[96px] w-[96px] flex-shrink-0 rounded-xl overflow-hidden border shadow-sm">
@@ -296,19 +296,15 @@ export default function HomeAiInput({
             </div>
           )}
         </div>
-
         <div
           className={cn(
-            `grid grid-cols-[min-content_1fr_min-content] relative outline-none backdrop-blur-sm px-2.5 duration-500 items-center`,
+            `grid grid-cols-[min-content_1fr_min-content] grid-rows-[1fr_min-content]
+            [grid-template-areas:'file_file_file'_'inputlarge_inputlarge_inputlarge'_'left_inputshort_right']
+            relative outline-none backdrop-blur-sm px-2.5 items-center`,
             isDark //UI_option: dark textarea input bg-[rgb(10,0,0)] or bg-trans
-              ? 'bg-[rgb(10,0,0)] focus-within:shadow-[0px_1px_10px_rgba(255,255,255,0.25)]'
-              : 'bg-gradient-to-br from-rose-50/90 to-pink-50/80 shadow-lg',
-            isMultiLine
-              ? `rounded-2xl 
-              grid-rows-[1fr_min-content]
-              [grid-template-areas:'file_file_file'_'input_input_input'_'left_empty_right']`
-              : `rounded-full
-              [grid-template-areas:'file_file_file'_'left_input_right']`,
+              ? "bg-[rgb(10,0,0)] focus-within:shadow-[0px_1px_10px_rgba(255,255,255,0.25)]"
+              : "bg-gradient-to-br from-rose-50/90 to-pink-50/80 shadow-lg",
+            isMultiLine ? `rounded-2xl` : `rounded-full`,
           )}
         >
           {value.trim() || !browserSupportsSpeechRecognition ? (
@@ -317,14 +313,14 @@ export default function HomeAiInput({
               onClick={enhancePrompt}
               disabled={isEnhancing}
               className={cn(
-                'cursor-pointer [grid-area:left] rounded-full p-2 h-8 w-8 transition-all flex items-center justify-center',
-                value.trim() ? 'opacity-100' : 'opacity-50',
+                "cursor-pointer [grid-area:left] rounded-full p-2 h-8 w-8 transition-all flex items-center justify-center",
+                value.trim() ? "opacity-100" : "opacity-50",
                 isEnhancing
-                  ? 'bg-[var(--accent-interactive-primary)]/20 text-[var(--accent-interactive-primary)] cursor-not-allowed'
-                  : 'accent-action-fill',
+                  ? "bg-[var(--accent-interactive-primary)]/20 text-[var(--accent-interactive-primary)] cursor-not-allowed"
+                  : "accent-action-fill",
               )}
-              aria-label={isEnhancing ? 'Enhancing prompt...' : 'Enhance prompt'}
-              title={isEnhancing ? 'Enhancing prompt...' : 'Enhance prompt with AI'}
+              aria-label={isEnhancing ? "Enhancing prompt..." : "Enhance prompt"}
+              title={isEnhancing ? "Enhancing prompt..." : "Enhance prompt with AI"}
             >
               {isEnhancing ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -337,13 +333,13 @@ export default function HomeAiInput({
               type="button"
               onClick={listening ? stopListening : startListening}
               className={cn(
-                'cursor-pointer [grid-area:left] rounded-full p-2 h-8 w-8 transition-all flex items-center justify-center relative',
+                "cursor-pointer [grid-area:left] rounded-full p-2 h-8 w-8 transition-all flex items-center justify-center relative",
                 isDark
-                  ? 'transparent  text-white/80 hover:bg-white/20'
-                  : 'transparent  text-gray-700 hover:bg-black/15 border border-white/40',
+                  ? "transparent  text-white/80 hover:bg-white/20"
+                  : "transparent  text-gray-700 hover:bg-black/15 border border-white/40",
               )}
-              aria-label={listening ? 'Stop recording' : 'Start voice input'}
-              title={listening ? 'Stop recording' : 'Start voice input'}
+              aria-label={listening ? "Stop recording" : "Start voice input"}
+              title={listening ? "Stop recording" : "Start voice input"}
             >
               {listening ? (
                 <MicOff className="w-4 h-4 text-red-500" />
@@ -353,30 +349,35 @@ export default function HomeAiInput({
             </button>
           )}
 
-          <div className="[grid-area:input] col-span-3">
+          <div
+            className={cn(
+              "col-span-3",
+              isMultiLine ? "[grid-area:inputlarge]" : "[grid-area:inputshort]",
+            )}
+          >
             <Textarea
               ref={textareaRef}
               value={value}
               onChange={(e) => {
-                setValue(e.target.value)
-                adjustHeight()
+                setValue(e.target.value);
+                adjustHeight();
               }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  handleSend()
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
                 }
               }}
-              placeholder={showSearch ? 'Search the web...' : 'Type your message here...'}
+              placeholder={showSearch ? "Search the web..." : "Type your message here..."}
               className={cn(
                 `pl-1 w-full border-none resize-none 
                   focus:outline-none focus-visible:outline-none
                   leading-[1.5] text-[15px] md:text-base 
                   placeholder:opacity-80 placeholder:text-[15px] md:placeholder:text-base`,
-                isMultiLine ? 'my-3 py-0' : 'pl-2.5 py-4',
+                isMultiLine ? "my-3 py-0" : "pl-2.5 py-4",
                 isDark
-                  ? 'bg-transparent text-white placeholder:text-white/70'
-                  : 'bg-transparent text-gray-800 placeholder:text-gray-600',
+                  ? "bg-transparent text-white placeholder:text-white/70"
+                  : "bg-transparent text-gray-800 placeholder:text-gray-600",
               )}
             />
           </div>
@@ -384,7 +385,7 @@ export default function HomeAiInput({
           {/* Toolbar */}
           <div
             className={cn(
-              '[grid-area:right] h-12 flex items-center justify-between',
+              "[grid-area:right] h-12 flex items-center justify-between",
               // isDark ? "bg-inherit" : "bg-gradient-to-r from-rose-100/70 to-pink-100/60 border-t border-rose-200/50"
             )}
           >
@@ -393,13 +394,13 @@ export default function HomeAiInput({
               <label
                 title="Attach file"
                 className={cn(
-                  'cursor-pointer relative rounded-full transition-all duration-200 w-8 h-8 justify-center flex items-center',
-                  isDark ? '' : 'hover:bg-rose-200/40 hover:border hover:border-rose-300/50',
+                  "cursor-pointer relative rounded-full transition-all duration-200 w-8 h-8 justify-center flex items-center",
+                  isDark ? "" : "hover:bg-rose-200/40 hover:border hover:border-rose-300/50",
                   attachedFile
-                    ? 'bg-[var(--accent-interactive-primary)]/15 border border-[var(--accent-interactive-primary)] text-[var(--accent-interactive-primary)]'
+                    ? "bg-[var(--accent-interactive-primary)]/15 border border-[var(--accent-interactive-primary)] text-[var(--accent-interactive-primary)]"
                     : isDark
-                      ? 'text-white/60 hover:text-white'
-                      : 'text-black-700 hover:text-black-800',
+                      ? "text-white/60 hover:text-white"
+                      : "text-black-700 hover:text-black-800",
                 )}
               >
                 <input
@@ -419,10 +420,10 @@ export default function HomeAiInput({
                   type="button"
                   onClick={onOpenModelSelector}
                   className={cn(
-                    'cursor-pointer rounded-full transition-all flex items-center gap-2 px-3 py-1.5 h-8',
+                    "cursor-pointer rounded-full transition-all flex items-center gap-2 px-3 py-1.5 h-8",
                     isDark
-                      ? 'bg-white/10 text-white hover:bg-white/15'
-                      : 'bg-rose-200/40 text-rose-800 hover:bg-rose-200/60 border border-rose-300/50',
+                      ? "bg-white/10 text-white hover:bg-white/15"
+                      : "bg-rose-200/40 text-rose-800 hover:bg-rose-200/60 border border-rose-300/50",
                   )}
                   aria-label="Choose model"
                   title="Choose model"
@@ -451,26 +452,26 @@ export default function HomeAiInput({
                   type="button"
                   onClick={() => setShowSearch((s) => !s)}
                   className={cn(
-                    'cursor-pointer rounded-full transition-all flex items-center w-8 h-8 justify-center',
+                    "cursor-pointer rounded-full transition-all flex items-center w-8 h-8 justify-center",
                     showSearch
-                      ? 'text-[var(--accent-interactive-primary)] border border-rose-900 bg-rose-200/90 hover:bg-transparent'
+                      ? "text-[var(--accent-interactive-primary)] border border-rose-900 bg-rose-200/90 hover:bg-transparent"
                       : isDark
-                        ? ' text-white/80'
-                        : ' hover:bg-rose-200/40 hover:border hover:border-rose-300/50',
+                        ? " text-white/80"
+                        : " hover:bg-rose-200/40 hover:border hover:border-rose-300/50",
                   )}
                   title="Search web"
                   data-active={showSearch}
-                  aria-pressed={showSearch ? 'true' : 'false'}
+                  aria-pressed={showSearch ? "true" : "false"}
                 >
                   <div className=" flex items-center justify-center ">
                     <Globe
                       className={cn(
-                        'w-4 h-4',
+                        "w-4 h-4",
                         showSearch
-                          ? 'text-var(--accent-interactive-primary)'
+                          ? "text-var(--accent-interactive-primary)"
                           : isDark
-                            ? 'text-white/70'
-                            : 'text-gray-700 ',
+                            ? "text-white/70"
+                            : "text-gray-700 ",
                       )}
                     />
                   </div>
@@ -503,5 +504,5 @@ export default function HomeAiInput({
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
