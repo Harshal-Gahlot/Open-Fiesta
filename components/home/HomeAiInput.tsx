@@ -301,8 +301,8 @@ export default function HomeAiInput({
             `grid grid-cols-[min-content_1fr_min-content] grid-rows-[1fr_min-content]
             [grid-template-areas:'file_file_file'_'inputlarge_inputlarge_inputlarge'_'left_inputshort_right']
             relative outline-none backdrop-blur-sm px-2.5 items-center`,
-            isDark //UI_option: dark textarea input bg-[rgb(10,0,0)] or bg-trans
-              ? "bg-[rgb(10,0,0)] focus-within:shadow-[0px_1px_10px_rgba(255,255,255,0.25)]"
+            isDark
+              ? "bg-black focus-within:shadow-[0px_1px_10px_rgba(255,255,255,0.25)]"
               : "bg-gradient-to-br from-rose-50/90 to-pink-50/80 shadow-lg",
             isMultiLine ? `rounded-2xl` : `rounded-full`,
           )}

@@ -103,32 +103,32 @@ export default function ChatGrid({
                   <div
                     key={m.id}
                     className={cn(
-                      'px-2.5 py-2 sm:px-2 sm:py-2 min-h-[42px] min-w-0 flex items-center rounded-b-lg backdrop-blur-sm shadow-[0_2px_4px_rgba(0,0,0,0.25)] bg-black/90', //UI_option: model chatbot bar color
-                      isCollapsed ? 'justify-center' : 'justify-between',
-                      m.good 
+                      "px-2.5 py-2 sm:px-2 sm:py-2 min-h-[42px] min-w-0 flex items-center rounded-b-lg backdrop-blur-sm shadow-[0_2px_4px_rgba(0,0,0,0.25)]",
+                      isCollapsed ? "justify-center" : "justify-between",
+                      m.good
                         ? isDark
-                          ? 'outline-1 outline-amber-300/50' // UI_option: pro model dark theme outline
-                          // ? 'shadow-[0px_1px_4px_var(--badge-pro-shadow-border-dark)]'
-                          : 'shadow-[0px_1px_4px_var(--badge-pro-shadow-border-light)]'
+                        // ? "bg-black/90 outline-0 shadow-[0px_2px_6px_var(--badge-pro-shadow-border-dark)] bg-gradient-to-b from-amber-400/15 to-black/90"
+                          ? "bg-black/90 outline-1 outline-amber-300/50 bg-gradient-to-b from-amber-400/15 to-black/90"
+                          : "shadow-[0px_1px_4px_var(--badge-pro-shadow-border-light)] bg-gradient-to-b from-amber-400/20 to-transparent"
                         : isDark
-                          ? 'shadow-[0px_1px_2px_rgba(255,255,255,0.25)]'
-                          : 'shadow-[0_2px_4px_rgba(0,0,0,0.25)]',
+                          ? "bg-black/90 shadow-[0px_1px_2px_rgba(255,255,255,0.25)] "
+                          : "shadow-[0_2px_4px_rgba(0,0,0,0.25)]",
                     )}
                   >
                     {!isCollapsed && (
                       <div
                         className={cn(
-                          'text-[12px] leading-normal font-medium pr-2 inline-flex items-center gap-1.5 min-w-0 drop-shadow-[0_1px_0_rgba(0,0,0,0.35)] sm:drop-shadow-none',
-                          isDark ? 'text-white' : 'text-gray-800',
+                          "text-[12px] leading-normal font-medium pr-2 inline-flex items-center gap-1.5 min-w-0 drop-shadow-[0_1px_0_rgba(0,0,0,0.35)] sm:drop-shadow-none",
+                          isDark ? "text-white" : "text-gray-800",
                         )}
                       >
                         {m.good && (
                           <span
                             className={cn(
-                              'inline-flex items-center gap-1 h-6 self-center px-2 py-0.5 rounded-full text-[11px] font-medium',
+                              "inline-flex items-center gap-1 h-6 self-center px-2 py-0.5 rounded-full text-[11px] font-medium",
                               isDark
-                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                                : 'bg-amber-100 text-amber-700 border border-amber-300',
+                                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                : "bg-amber-100 text-amber-700 border border-amber-300",
                             )}
                           >
                             <Star size={11} />
@@ -138,10 +138,10 @@ export default function ChatGrid({
                         {isFree && (
                           <span
                             className={cn(
-                              'inline-flex items-center gap-1 h-6 self-center px-2 py-0.5 rounded-full text-[11px] font-medium',
+                              "inline-flex items-center gap-1 h-6 self-center px-2 py-0.5 rounded-full text-[11px] font-medium",
                               isDark
-                                ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-                                : 'bg-green-100 text-green-700 border border-green-300',
+                                ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                                : "bg-green-100 text-green-700 border border-green-300",
                             )}
                           >
                             <span className="hidden sm:inline">Free</span>
@@ -149,10 +149,10 @@ export default function ChatGrid({
                         )}
                         <span
                           className={cn(
-                            'truncate max-w-[18ch] px-2 py-0.5 rounded-full text-[12px]',
+                            "truncate max-w-[18ch] px-2 py-0.5 rounded-full text-[12px]",
                             isDark
-                              ? 'border border-white/10 bg-white/5'
-                              : 'border border-gray-300/40 bg-white/20',
+                              ? "border border-white/10 bg-white/5"
+                              : "border border-gray-300/40 bg-white/20",
                           )}
                           title={m.label}
                         >
@@ -166,10 +166,10 @@ export default function ChatGrid({
                         onClick={() => onToggle(m.id)}
                         className="icon-btn h-7 w-7 accent-focus"
                         data-selected={true}
-                        data-type={m.good ? 'pro' : isFree ? 'free' : 'other'}
+                        data-type={m.good ? "pro" : isFree ? "free" : "other"}
                         title="Click to toggle"
                       >
-                        <Minus size={16} data-type={m.good ? 'pro' : 'free'} data-active={true} />
+                        <Minus size={16} data-type={m.good ? "pro" : "free"} data-active={true} />
                       </button>
 
                       {isCollapsed ? (
